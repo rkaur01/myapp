@@ -2,8 +2,13 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 
-// Host your dir so you can manually check stuff
+// Host your dir so the client can access files like index.html and client.js
 app.use(express.static(__dirname));
+
+// If they visit localhost:3000/ send them to index.html
+app.get('/', function (req, res) {
+  res.sendFile('index.html');
+});
 
 // Read endpoint
 app.get('/api/read', function (req, res) {
@@ -11,8 +16,8 @@ app.get('/api/read', function (req, res) {
 });
 
 // Write endpoint
-app.get('/api/write', function (req, res) {
-  res.json(writeData(req.query));
+app.post('/api/write', function (req, res) {
+  res.json(writeData(req.body));
 });
 
 // Server listener
