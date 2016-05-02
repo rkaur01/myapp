@@ -1,31 +1,31 @@
 var express = require('express');
 var app = express();
-var fs = require("fs");
+var fs = require('fs');
 
-/* Will not need until you're serving an actual app
+// Host your dir so you can manually check stuff
+app.use(express.static(__dirname));
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
+// Read endpoint
+app.get('/api/read', function (req, res) {
+  res.json(readData());
 });
 
+// Write endpoint
+app.get('/api/write', function (req, res) {
+  res.json(writeData(req.query));
+});
+
+// Server listener
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
-});*/
+});
 
+// Wrapper for saved file -> obj
+function readData() {
+  return JSON.parse(fs.readFileSync('events.json', 'utf8'));
+}
 
-// Get contents as string
-var contents = fs.readFileSync('events.json', 'utf8');
-
-// Parse string as array of JSON objects
-contents = JSON.parse(contents);
-
-// Push an object to the array
-contents.push({ test: 'test'});
-
-// Turn the array back into a string
-contents = JSON.stringify(contents);
-
-// Write it to the file
-var update = fs.writeFileSync('events.json', contents);
-
-// Now check events.json to see if it worked.
+// Wrapper for obj -> saved file
+function writeData(update) {
+  return fs.writeFileSync('events.json', JSON.stringify(update));
+}
